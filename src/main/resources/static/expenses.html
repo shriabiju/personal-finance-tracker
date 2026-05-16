@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses | Personal Finance Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #0f0f1a;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .navbar {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 30px;
+        }
+        .navbar-brand {
+            color: #4cc9f0 !important;
+            font-weight: 700;
+            font-size: 22px;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.7) !important;
+            margin: 0 10px;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #4cc9f0 !important;
+        }
+        .btn-logout {
+            background: rgba(255,99,99,0.15);
+            border: 1px solid rgba(255,99,99,0.3);
+            color: #ff6363;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 14px;
+        }
+        .main-content { padding: 30px; }
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .page-sub {
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 30px;
+        }
+        .card-dark {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 25px;
+        }
+        .form-label { color: rgba(255,255,255,0.8); font-size: 14px; }
+        .form-control, .form-select {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: #fff;
+            padding: 10px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: rgba(255,255,255,0.12);
+            border-color: #4cc9f0;
+            color: #fff;
+            box-shadow: none;
+        }
+        .form-control::placeholder { color: rgba(255,255,255,0.3); }
+        .form-select option { background: #1a1a2e; }
+        .btn-add {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            color: #fff;
+            font-weight: 600;
+            width: 100%;
+        }
+        .btn-add:hover { opacity: 0.9; color: #fff; }
+        .table-dark-custom {
+            color: #fff;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+        .table-dark-custom thead th {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            padding-bottom: 10px;
+        }
+        .table-dark-custom tbody tr {
+            background: rgba(255,255,255,0.05);
+        }
+        .table-dark-custom tbody td {
+            border: none;
+            padding: 14px 16px;
+            vertical-align: middle;
+        }
+        .table-dark-custom tbody tr td:first-child { border-radius: 10px 0 0 10px; }
+        .table-dark-custom tbody tr td:last-child { border-radius: 0 10px 10px 0; }
+        .category-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .btn-edit {
+            background: rgba(76,201,240,0.15);
+            border: 1px solid rgba(76,201,240,0.3);
+            color: #4cc9f0;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 13px;
+        }
+        .btn-delete {
+            background: rgba(255,99,99,0.15);
+            border: 1px solid rgba(255,99,99,0.3);
+            color: #ff6363;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 13px;
+        }
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-select {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: #fff;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        .filter-select option { background: #1a1a2e; }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* Modal */
+        .modal-dark .modal-content {
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            color: #fff;
+        }
+        .modal-dark .modal-header {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .modal-dark .modal-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .modal-dark .btn-close { filter: invert(1); }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <span class="navbar-brand">💰 FinanceTracker</span>
+    <div class="ms-auto d-flex align-items-center">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="expenses.html" class="nav-link active">Expenses</a>
+        <a href="budget.html" class="nav-link">Budget</a>
+        <button class="btn-logout ms-3" onclick="logout()">
+            <i class="fas fa-sign-out-alt me-1"></i>Logout
+        </button>
+    </div>
+</nav>
+
+<div class="main-content">
+    <div class="page-title">💸 Expense Manager</div>
+    <div class="page-sub">Add, edit and track your expenses</div>
+
+    <div class="row g-4">
+
+        <!-- Add Expense Form -->
+        <div class="col-md-4">
+            <div class="card-dark">
+                <h5 class="mb-4" style="color:#4cc9f0;">
+                    <i class="fas fa-plus-circle me-2"></i>Add Expense
+                </h5>
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" placeholder="e.g. Lunch">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Amount (₹)</label>
+                    <input type="number" class="form-control" id="amount" placeholder="0.00">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="category">
+                        <option value="">Select category</option>
+                        <option>Food</option>
+                        <option>Travel</option>
+                        <option>Shopping</option>
+                        <option>Bills</option>
+                        <option>Entertainment</option>
+                        <option>Health</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-control" id="description" placeholder="Optional">
+                </div>
+                <button class="btn-add" onclick="addExpense()">
+                    <i class="fas fa-plus me-2"></i>Add Expense
+                </button>
+            </div>
+        </div>
+
+        <!-- Expense Table -->
+        <div class="col-md-8">
+            <div class="card-dark">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 style="color:#4cc9f0; margin:0;">
+                        <i class="fas fa-list me-2"></i>All Expenses
+                    </h5>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <select class="filter-select" id="filterCategory" onchange="filterExpenses()">
+                        <option value="">All Categories</option>
+                        <option>Food</option>
+                        <option>Travel</option>
+                        <option>Shopping</option>
+                        <option>Bills</option>
+                        <option>Entertainment</option>
+                        <option>Health</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-dark-custom">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Amount</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenseTable">
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-receipt fa-2x mb-3"></i>
+                                        <p>No expenses yet</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade modal-dark" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Expense</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" id="editTitle">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Amount (₹)</label>
+                    <input type="number" class="form-control" id="editAmount">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="editCategory">
+                        <option>Food</option>
+                        <option>Travel</option>
+                        <option>Shopping</option>
+                        <option>Bills</option>
+                        <option>Entertainment</option>
+                        <option>Health</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-control" id="editDate">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-control" id="editDescription">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-add" style="width:auto; padding: 8px 20px;"
+                    onclick="updateExpense()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const userId = localStorage.getItem('userId');
+    if (!userId) window.location.href = 'login.html';
+
+    let allExpenses = [];
+
+    const categoryColors = {
+        Food: '#f59e0b', Travel: '#4cc9f0', Shopping: '#a855f7',
+        Bills: '#ff6363', Entertainment: '#4361ee', Health: '#4cc996'
+    };
+
+    // Set today's date as default
+    document.getElementById('date').valueAsDate = new Date();
+
+    async function loadExpenses() {
+        try {
+            const res = await fetch(`http://localhost:8080/api/expenses/user/${userId}`);
+            allExpenses = await res.json();
+            renderTable(allExpenses);
+        } catch (e) {
+            console.error('Error loading expenses:', e);
+        }
+    }
+
+    function renderTable(expenses) {
+        const tbody = document.getElementById('expenseTable');
+        if (expenses.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5">
+                <div class="empty-state">
+                    <i class="fas fa-receipt fa-2x mb-3"></i>
+                    <p>No expenses found</p>
+                </div></td></tr>`;
+            return;
+        }
+        tbody.innerHTML = expenses.map(e => `
+            <tr>
+                <td><strong>${e.title}</strong><br>
+                    <small style="color:rgba(255,255,255,0.4)">${e.description || ''}</small>
+                </td>
+                <td><strong>₹${e.amount.toFixed(2)}</strong></td>
+                <td><span class="category-badge"
+                    style="background:${categoryColors[e.category] || '#666'}22;
+                    color:${categoryColors[e.category] || '#fff'};
+                    border:1px solid ${categoryColors[e.category] || '#666'}44">
+                    ${e.category}</span>
+                </td>
+                <td>${e.date}</td>
+                <td>
+                    <button class="btn-edit me-1" onclick="openEdit(${e.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-delete" onclick="deleteExpense(${e.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function filterExpenses() {
+        const cat = document.getElementById('filterCategory').value;
+        const filtered = cat ? allExpenses.filter(e => e.category === cat) : allExpenses;
+        renderTable(filtered);
+    }
+
+    async function addExpense() {
+        const title = document.getElementById('title').value.trim();
+        const amount = document.getElementById('amount').value;
+        const category = document.getElementById('category').value;
+        const date = document.getElementById('date').value;
+        const description = document.getElementById('description').value.trim();
+
+        if (!title || !amount || !category || !date) {
+            alert('Please fill all required fields.');
+            return;
+        }
+
+        try {
+            const res = await fetch('http://localhost:8080/api/expenses', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, amount, category, date, description, userId })
+            });
+            if (res.ok) {
+                document.getElementById('title').value = '';
+                document.getElementById('amount').value = '';
+                document.getElementById('category').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('date').valueAsDate = new Date();
+                loadExpenses();
+            }
+        } catch (e) {
+            console.error('Error adding expense:', e);
+        }
+    }
+
+    function openEdit(id) {
+        const e = allExpenses.find(x => x.id === id);
+        if (!e) return;
+        document.getElementById('editId').value = e.id;
+        document.getElementById('editTitle').value = e.title;
+        document.getElementById('editAmount').value = e.amount;
+        document.getElementById('editCategory').value = e.category;
+        document.getElementById('editDate').value = e.date;
+        document.getElementById('editDescription').value = e.description || '';
+        new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    async function updateExpense() {
+        const id = document.getElementById('editId').value;
+        const title = document.getElementById('editTitle').value.trim();
+        const amount = document.getElementById('editAmount').value;
+        const category = document.getElementById('editCategory').value;
+        const date = document.getElementById('editDate').value;
+        const description = document.getElementById('editDescription').value.trim();
+
+        try {
+            const res = await fetch(`http://localhost:8080/api/expenses/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, amount, category, date, description, userId })
+            });
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                loadExpenses();
+            }
+        } catch (e) {
+            console.error('Error updating expense:', e);
+        }
+    }
+
+    async function deleteExpense(id) {
+        if (!confirm('Delete this expense?')) return;
+        try {
+            await fetch(`http://localhost:8080/api/expenses/${id}`, { method: 'DELETE' });
+            loadExpenses();
+        } catch (e) {
+            console.error('Error deleting expense:', e);
+        }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    loadExpenses();
+</script>
+
+</body>
+</html>

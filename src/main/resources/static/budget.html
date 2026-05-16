@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget | Personal Finance Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: #0f0f1a;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .navbar {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 30px;
+        }
+        .navbar-brand {
+            color: #4cc9f0 !important;
+            font-weight: 700;
+            font-size: 22px;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.7) !important;
+            margin: 0 10px;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #4cc9f0 !important;
+        }
+        .btn-logout {
+            background: rgba(255,99,99,0.15);
+            border: 1px solid rgba(255,99,99,0.3);
+            color: #ff6363;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 14px;
+        }
+        .main-content { padding: 30px; }
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .page-sub {
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 30px;
+        }
+        .card-dark {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 25px;
+            height: 100%;
+        }
+        .form-label { color: rgba(255,255,255,0.8); font-size: 14px; }
+        .form-control, .form-select {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: #fff;
+            padding: 10px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: rgba(255,255,255,0.12);
+            border-color: #4cc9f0;
+            color: #fff;
+            box-shadow: none;
+        }
+        .form-select option { background: #1a1a2e; }
+        .btn-save {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            color: #fff;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-save:hover { opacity: 0.9; color: #fff; }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 16px;
+        }
+        .stat-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+        }
+        .progress-custom {
+            height: 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .progress-bar-custom {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .alert-success-dark {
+            background: rgba(76,201,150,0.15);
+            border: 1px solid rgba(76,201,150,0.3);
+            color: #4cc996;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 14px;
+            display: none;
+            margin-top: 10px;
+        }
+        .section-title {
+            color: #4cc9f0;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <span class="navbar-brand">💰 FinanceTracker</span>
+    <div class="ms-auto d-flex align-items-center">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="expenses.html" class="nav-link">Expenses</a>
+        <a href="budget.html" class="nav-link active">Budget</a>
+        <button class="btn-logout ms-3" onclick="logout()">
+            <i class="fas fa-sign-out-alt me-1"></i>Logout
+        </button>
+    </div>
+</nav>
+
+<div class="main-content">
+    <div class="page-title">🎯 Budget Manager</div>
+    <div class="page-sub">Set and monitor your monthly budget</div>
+
+    <div class="row g-4">
+
+        <!-- Set Budget Form -->
+        <div class="col-md-4">
+            <div class="card-dark">
+                <div class="section-title">
+                    <i class="fas fa-sliders-h me-2"></i>Set Monthly Budget
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Select Month</label>
+                    <select class="form-select" id="budgetMonth"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Monthly Limit (₹)</label>
+                    <input type="number" class="form-control"
+                        id="monthlyLimit" placeholder="e.g. 10000">
+                </div>
+
+                <button class="btn-save" onclick="saveBudget()">
+                    <i class="fas fa-save me-2"></i>Save Budget
+                </button>
+
+                <div class="alert-success-dark" id="successMsg">
+                    <i class="fas fa-check-circle me-2"></i>Budget saved successfully!
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget Overview -->
+        <div class="col-md-8">
+            <div class="card-dark">
+                <div class="section-title">
+                    <i class="fas fa-chart-pie me-2"></i>Budget Overview
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="stat-card" style="border-left: 4px solid #4cc9f0;">
+                            <div class="stat-label">Monthly Budget</div>
+                            <div class="stat-value" id="displayBudget">₹0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card" style="border-left: 4px solid #ff6363;">
+                            <div class="stat-label">Total Spent</div>
+                            <div class="stat-value" id="displaySpent">₹0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card" style="border-left: 4px solid #4cc996;">
+                            <div class="stat-label">Remaining</div>
+                            <div class="stat-value" id="displayRemaining">₹0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span style="color:rgba(255,255,255,0.7); font-size:14px;">
+                            Budget Used
+                        </span>
+                        <span style="color:#4cc9f0; font-size:14px;" id="percentText">0%</span>
+                    </div>
+                    <div class="progress-custom">
+                        <div class="progress-bar-custom" id="progressBar"
+                            style="width:0%; background: linear-gradient(135deg, #4cc9f0, #4361ee);">
+                        </div>
+                    </div>
+                    <div class="progress-label">
+                        <span>₹0 spent</span>
+                        <span id="progressMax">₹0 limit</span>
+                    </div>
+                </div>
+
+                <!-- Doughnut Chart -->
+                <div class="mt-4" style="max-width: 280px; margin: 0 auto;">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const userId = localStorage.getItem('userId');
+    if (!userId) window.location.href = 'login.html';
+
+    let budgetChart;
+
+    // Populate month dropdown
+    function populateMonths() {
+        const select = document.getElementById('budgetMonth');
+        const now = new Date();
+        for (let i = 0; i < 6; i++) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+            const label = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+            const opt = document.createElement('option');
+            opt.value = value;
+            opt.textContent = label;
+            select.appendChild(opt);
+        }
+        select.addEventListener('change', loadBudgetOverview);
+    }
+
+    async function saveBudget() {
+        const month = document.getElementById('budgetMonth').value;
+        const monthlyLimit = document.getElementById('monthlyLimit').value;
+
+        if (!monthlyLimit || monthlyLimit <= 0) {
+            alert('Please enter a valid budget amount.');
+            return;
+        }
+
+        try {
+            const res = await fetch('http://localhost:8080/api/budgets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ monthlyLimit, month, userId })
+            });
+
+            if (res.ok) {
+                const successMsg = document.getElementById('successMsg');
+                successMsg.style.display = 'block';
+                setTimeout(() => successMsg.style.display = 'none', 3000);
+                loadBudgetOverview();
+            }
+        } catch (e) {
+            console.error('Error saving budget:', e);
+        }
+    }
+
+    async function loadBudgetOverview() {
+        const month = document.getElementById('budgetMonth').value;
+
+        try {
+            // Get budget
+            const budgetRes = await fetch(
+                `http://localhost:8080/api/budgets/user/${userId}/month/${month}`
+            );
+
+            // Get total spent
+            const spentRes = await fetch(
+                `http://localhost:8080/api/expenses/user/${userId}/total`
+            );
+
+            let budget = 0;
+            let spent = 0;
+
+            if (budgetRes.ok) {
+                const budgetData = await budgetRes.json();
+                budget = budgetData.monthlyLimit || 0;
+            }
+
+            if (spentRes.ok) {
+                spent = await spentRes.json() || 0;
+            }
+
+            const remaining = Math.max(budget - spent, 0);
+            const percent = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
+
+            document.getElementById('displayBudget').textContent = '₹' + budget.toFixed(2);
+            document.getElementById('displaySpent').textContent = '₹' + spent.toFixed(2);
+            document.getElementById('displayRemaining').textContent = '₹' + remaining.toFixed(2);
+            document.getElementById('percentText').textContent = percent.toFixed(1) + '%';
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressBar').style.background =
+                percent > 80
+                    ? 'linear-gradient(135deg, #ff6363, #ff9f43)'
+                    : 'linear-gradient(135deg, #4cc9f0, #4361ee)';
+            document.getElementById('progressMax').textContent = '₹' + budget.toFixed(2) + ' limit';
+
+            renderChart(spent, remaining);
+
+        } catch (e) {
+            console.error('Budget overview error:', e);
+        }
+    }
+
+    function renderChart(spent, remaining) {
+        if (budgetChart) budgetChart.destroy();
+
+        budgetChart = new Chart(document.getElementById('budgetChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Spent', 'Remaining'],
+                datasets: [{
+                    data: [spent, remaining],
+                    backgroundColor: ['#ff6363', '#4cc996'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff', font: { size: 13 } }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    populateMonths();
+    loadBudgetOverview();
+</script>
+
+</body>
+</html>
