@@ -329,19 +329,28 @@ http://localhost:8080/login.html
 
 ### Login Page
 
-> Add screenshot here
+<img width="1919" height="871" alt="image" src="https://github.com/user-attachments/assets/c4db711d-5ac5-4c5e-a470-1980d63d74a8" />
+</br>
+<img width="1919" height="870" alt="image" src="https://github.com/user-attachments/assets/c0415411-8922-430b-be56-79e0b1e85461" />
+
+
 
 ### Dashboard
 
-> Add screenshot here
+<img width="1896" height="866" alt="image" src="https://github.com/user-attachments/assets/75139ae4-363f-41b6-be35-3aa696c18b61" />
+</br>
+<img width="1897" height="879" alt="image" src="https://github.com/user-attachments/assets/5b22edaa-0a2d-438b-8b4f-85a5ffa40312" />
+
 
 ### Expense Management
 
-> Add screenshot here
+<img width="1919" height="866" alt="image" src="https://github.com/user-attachments/assets/8aa92efd-aa76-4560-ad84-fd9440899a42" />
+
 
 ### Budget Management
 
-> Add screenshot here
+<img width="1917" height="859" alt="image" src="https://github.com/user-attachments/assets/d1029db2-a8a7-479d-af2d-5f4686564c1e" />
+
 
 ---
 
