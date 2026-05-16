@@ -344,12 +344,12 @@ http://localhost:8080/login.html
 
 ### Expense Management
 
-<img width="1895" height="867" alt="image" src="https://github.com/user-attachments/assets/fc7e508e-b081-44b0-9c47-eb77f1b67119" />
+<img width="1919" height="866" alt="image" src="https://github.com/user-attachments/assets/8aa92efd-aa76-4560-ad84-fd9440899a42" />
 
 
 ### Budget Management
 
-<img width="1891" height="879" alt="image" src="https://github.com/user-attachments/assets/e7c0593f-400a-476b-a158-1f1e8fa5c2b0" />
+<img width="1917" height="859" alt="image" src="https://github.com/user-attachments/assets/d1029db2-a8a7-479d-af2d-5f4686564c1e" />
 
 
 ---
